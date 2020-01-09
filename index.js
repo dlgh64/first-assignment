@@ -55,7 +55,25 @@ svg.append("g")
     .classed("zero",true);
 
 //add labeled rect for each birthtear
-var time
+var time=time.selectAll(".time")
+    .data(d3.range(1997,2020,1))
+   .enter().append("g")
+    .attr("class","time")
+    .attr("transform",function(time){return "translate("+x(time)+",0)"});
+
+time.selectAll("rect")
+    .data(function(time){return data[time]||[0];})
+   .enter().append("rect")
+    .attr("x",-barWidth/2)
+    .attr("width",barWidth)
+    .attr("y",y)
+    .attr("height",function(value){return height-y(value);});
+
+//add labels to show birth
+time.append("text")
+    .attr("y",height-4)
+    .text(function(time){return time;});
+
 
 
 
