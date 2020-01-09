@@ -23,5 +23,46 @@ var svg=d3.select("body").append("svg")
    .append("g")
      .attr("transform","translate("+margin.left+","+margin.top+")");
 
-//a sliding container to hold the bars by time
+//a sliding container to hold the bars by birthyear
+var title=svg.append("text")
+    .attr("class","title")
+    .attr("dy",".71em")
+    .text(2000);
+
+d3.csv("data.csv",(error,data){
+   
+   //convert strings to numbers
+   data.forEach(function(d){
+     d.UK=+d.UK;
+     d.Europe=+d.Europe;
+     d.Africa=+d.Africa;
+     d.Asia=+d.Asia;
+     d.AmericaandOceania=+d.AmericaandOceania;
+});
+
+//update the scale domains
+x.domain[data.forEach(function(d){
+    d.time=+d.time})]
+y.domain[0,100];
+
+//add an axis to show the values
+svg.append("g")
+    .attr("class","y axis")
+    .attr("transfrom","translate("+width+",0)")
+    .call(yAxis)
+   .selectAll("g")
+   .filter(function(value){return !value;})
+    .classed("zero",true);
+
+//add labeled rect for each birthtear
+var time
+
+
+
+
+
+
+
+
+
 
