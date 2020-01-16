@@ -17,13 +17,16 @@ svg{
   font: 300 78px Helvetica Neue;
   fill: #666;
 }
-.time{
+.birthyear{
   text-anchor: middle;
 }
-.time{
+.birthyear{
   fill: #fff;
 }
 rect{
   fill-opacity: .6;
   fill: #e377c2;
+}
+rect:first-child{
+  fill:#1f77b4;
 }
