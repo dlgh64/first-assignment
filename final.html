@@ -66,7 +66,7 @@ var yAxis=d3.svg.axis()
     .scale(y)
     .orient("right")
     .tickSize(-width)
-    .tickFormat(function(d){return Math.round(d/1e1)+"%";});
+    .tickFormat(function(d){return Math.round(d/1e2)+"%";});
 
 //svg element with a bottom-right origin
 var svg=d3.select("body").append("svg")
