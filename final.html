@@ -119,7 +119,7 @@ svg.append("g")
 
 //add labeled rect for each birthtear
 var birthyear=birthyears.selectAll(".birthyear")
-    .data(d3.range(year0-age1,year1+1,5))
+    .data(d3.range(year0-age1,year1+1,1))
    .enter().append("g")
     .attr("class","birthyear")
     .attr("transform",function(birthyear){return "translate("+x(birthyear)+",0)"});
@@ -139,7 +139,7 @@ birthyear.append("text")
 
 // Add labels to show age (separate; not animated).
   svg.selectAll(".age")
-      .data(d3.range(0, age1 + 1, 5))
+      .data(d3.range(0, age1 + 1, 1))
     .enter().append("text")
       .attr("class", "age")
       .attr("x", function(age) { return x(year - age); })
