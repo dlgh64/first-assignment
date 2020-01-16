@@ -24,27 +24,38 @@ var svg=d3.select("body").append("svg")
      .attr("transform","translate("+margin.left+","+margin.top+")");
 
 //a sliding container to hold the bars by birthyear
+var birthyears=svg.append("g")
+    .attr("class","birthyears");
+//a label for current year
 var title=svg.append("text")
     .attr("class","title")
     .attr("dy",".71em")
-    .text(2000);
+    .text(2019);
 
-d3.csv("data.csv",(error,data){
+d3.csv("data.csv",function(error,data){
    
    //convert strings to numbers
    data.forEach(function(d){
-     d.UK=+d.UK;
-     d.Europe=+d.Europe;
-     d.Africa=+d.Africa;
-     d.Asia=+d.Asia;
-     d.AmericaandOceania=+d.AmericaandOceania;
+     d.percentage=+d.percentage;
+     d.year=+d.year;
+     d.age=+d.age;
 });
-
+// Compute the extent of the data set in age and years.
+  var age1 = d3.max(data, function(d) { return d.age; }),
+      year0 = d3.min(data, function(d) { return d.year; }),
+      year1 = d3.max(data, function(d) { return d.year; }),
+      year = year1;
 //update the scale domains
-x.domain[data.forEach(function(d){
-    d.time=+d.time})]
-y.domain[0,100];
-
+ x.domain([year1 - age1, year1]);
+  y.domain([0, d3.max(data, function(d) { return d.percentage; })]);
+    
+    // Produce a map from year and birthyear to [uk, asia].
+  data = d3.nest()
+      .key(function(d) { return d.year; })
+      .key(function(d) { return d.year - d.age; })
+      .rollup(function(v) { return v.map(function(d) { return d.percentage; }); })
+      .map(data);
+    
 //add an axis to show the values
 svg.append("g")
     .attr("class","y axis")
@@ -55,14 +66,14 @@ svg.append("g")
     .classed("zero",true);
 
 //add labeled rect for each birthtear
-var time=time.selectAll(".time")
-    .data(d3.range(1997,2020,1))
+var birthyear=birthyears.selectAll(".birthyear")
+    .data(d3.range(year0-age1,year1+1,5))
    .enter().append("g")
-    .attr("class","time")
-    .attr("transform",function(time){return "translate("+x(time)+",0)"});
+    .attr("class","birthyear")
+    .attr("transform",function(birthyear){return "translate("+x(birthyear)+",0)"});
 
-time.selectAll("rect")
-    .data(function(time){return data[time]||[0];})
+birthyear.selectAll("rect")
+    .data(function(birthyear){return data[year][birthyear]||[0,0];})
    .enter().append("rect")
     .attr("x",-barWidth/2)
     .attr("width",barWidth)
@@ -70,14 +81,47 @@ time.selectAll("rect")
     .attr("height",function(value){return height-y(value);});
 
 //add labels to show birth
-time.append("text")
+birthyear.append("text")
     .attr("y",height-4)
-    .text(function(time){return time;});
+    .text(function(birthyear){return birthyear;});
+
+// Add labels to show age (separate; not animated).
+  svg.selectAll(".age")
+      .data(d3.range(0, age1 + 1, 5))
+    .enter().append("text")
+      .attr("class", "age")
+      .attr("x", function(age) { return x(year - age); })
+      .attr("y", height + 4)
+      .attr("dy", ".71em")
+      .text(function(age) { return age;});
 
 
+// Allow the arrow keys to change the displayed year.
+  window.focus();
+  d3.select(window).on("keydown", function() {
+    switch (d3.event.keyCode) {
+      case 37: year = Math.max(year0, year - 10); break;
+      case 39: year = Math.min(year1, year + 10); break;
+    }
+    update();
+  });
 
+  function update() {
+    if (!(year in data)) return;
+    title.text(year);
 
+    birthyears.transition()
+        .duration(750)
+        .attr("transform", "translate(" + (x(year1) - x(year)) + ",0)");
 
+    birthyear.selectAll("rect")
+        .data(function(birthyear) { return data[year][birthyear] || [0, 0]; })
+      .transition()
+        .duration(750)
+        .attr("y", y)
+        .attr("height", function(value) { return height - y(value); });
+  }
+});
 
 
 
