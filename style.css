@@ -17,7 +17,8 @@ svg{
   font: 300 78px Helvetica Neue;
   fill: #666;
 }
-.birthyear{
+.birthyear
+.age {
   text-anchor: middle;
 }
 .birthyear{
